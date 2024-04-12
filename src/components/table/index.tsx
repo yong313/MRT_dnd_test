@@ -6,8 +6,8 @@ import {
   MRT_TableContainer,
 } from "material-react-table";
 import { data as initData, type TypeTable } from "./makeData";
-import { TypeFolderList } from "../folderList/folder";
-type OnChangeFn<T> = (updaterOrValue: T | ((prev: T) => T)) => void;
+import { TypeFolderList } from "../folderList/folderListTable";
+import { type OnChangeFn } from "../state/folderList";
 
 interface TableProps {
   draggingRow: MRT_Row<TypeTable> | null;

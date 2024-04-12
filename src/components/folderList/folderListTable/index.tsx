@@ -7,6 +7,7 @@ import {
 } from "material-react-table";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
+import { type OnChangeFn } from "../../state/folderList";
 
 export type TypeFolderList = {
   name: string;
@@ -72,24 +73,29 @@ export const data: TypeFolderList[] = [
   },
 ];
 
-type OnChangeFn<T> = (updaterOrValue: T | ((prev: T) => T)) => void;
+export const rootData: TypeFolderList[] = [
+  {
+    name: "모든파일",
+    path: "/",
+  },
+];
 
 interface FolderListProps {
+  root?: boolean;
   selectedName: string;
   setSelectedName: (name: string) => void;
   hoveredRow: MRT_Row<TypeFolderList> | null;
   setHoveredRow: OnChangeFn<MRT_Row<TypeFolderList> | null>;
-  hoveredTable: string | null;
   setHoveredTable: (tableName: string | null) => void;
 }
 
-const FolderList = ({
+const FolderListTable = ({
   selectedName,
   setSelectedName,
   hoveredRow,
   setHoveredRow,
-  hoveredTable,
   setHoveredTable,
+  root,
 }: FolderListProps) => {
   const columns = useMemo<MRT_ColumnDef<TypeFolderList>[]>(
     () => [
@@ -97,7 +103,7 @@ const FolderList = ({
         accessorKey: "name",
         header: "Name",
         Cell: ({ row }) => {
-          const paddingLeft = `${row.depth * 10.5}px`;
+          const padding = root ? "0 1rem" : `0 0 0 ${row.depth * 10.5}px`;
           const isDisabled = !row.original.subRows?.length;
 
           return (
@@ -105,35 +111,41 @@ const FolderList = ({
               style={{
                 display: "flex",
                 alignItems: "center",
-                paddingLeft,
+                padding,
               }}
             >
-              <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  row.toggleExpanded();
-                  setSelectedName(row.id);
-                }}
-                aria-label="expand row"
-                disabled={isDisabled}
-                sx={{
-                  margin: " 0 0.55rem",
-                }}
-              >
-                {isDisabled ? (
-                  <KeyboardArrowRight />
-                ) : (
-                  <>
-                    {row.getIsExpanded() ? (
-                      <KeyboardArrowDown />
-                    ) : (
+              {root ? (
+                <>{row.getValue("name")}</>
+              ) : (
+                <>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      row.toggleExpanded();
+                      setSelectedName(row.id);
+                    }}
+                    aria-label="expand row"
+                    disabled={isDisabled}
+                    sx={{
+                      margin: " 0 0.55rem",
+                    }}
+                  >
+                    {isDisabled ? (
                       <KeyboardArrowRight />
+                    ) : (
+                      <>
+                        {row.getIsExpanded() ? (
+                          <KeyboardArrowDown />
+                        ) : (
+                          <KeyboardArrowRight />
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </IconButton>
-              {row.getValue("name")}
+                  </IconButton>
+                  {row.getValue("name")}
+                </>
+              )}
             </div>
           );
         },
@@ -144,11 +156,12 @@ const FolderList = ({
 
   const table = useMaterialReactTable({
     columns,
-    data,
+    data: root ? rootData : data,
     enableExpandAll: false,
     enableExpanding: true,
     filterFromLeafRows: true,
-    getRowId: (originalRow) => `folder-list-table-${originalRow.name}`,
+    getRowId: (originalRow) =>
+      root ? "/" : `folder-list-table-${originalRow.name}`,
     getSubRows: (row) => row.subRows,
     initialState: {
       globalFilter: false,
@@ -207,6 +220,7 @@ const FolderList = ({
         setSelectedName(row.id);
       },
       sx: {
+        cursor: "pointer",
         height: "2.45rem",
         backgroundColor:
           hoveredRow?.original.name === row.original.name
@@ -217,7 +231,6 @@ const FolderList = ({
         "td:nth-of-type(1)": {
           display: "none",
         },
-        cursor: "pointer",
         div: {
           color:
             hoveredRow?.original.name === row.original.name
@@ -225,16 +238,13 @@ const FolderList = ({
               : selectedName === row.id
               ? "#604bcc"
               : "#454545",
-          fontWeight: selectedName === row.id ? "800" : undefined,
+          fontWeight: selectedName === row.id && "800",
         },
         button: {
           color:
             hoveredRow?.original.name === row.original.name
               ? "#fff !important"
-              : selectedName === row.id
-              ? "#604bcc"
-              : undefined,
-
+              : selectedName === row.id && "#604bcc",
           ":disabled": {
             color: selectedName === row.id ? "#604bcc" : "#757575",
           },
@@ -265,4 +275,4 @@ const FolderList = ({
   return <MaterialReactTable table={table} />;
 };
 
-export default FolderList;
+export default FolderListTable;

@@ -1,22 +1,18 @@
-import { useState } from "react";
-import FolderList, {
-  type TypeFolderList,
-} from "./components/folderList/folder";
 import Table from "./components/table";
-import FolderRoot from "./components/folderList/root";
-import { type TypeTable } from "./components/table/makeData";
+import FolderListTable from "./components/folderList";
 import styled from "@emotion/styled";
-import { MRT_Row } from "material-react-table";
+import { useFolderList } from "./components/state/folderList";
 
 function App() {
-  const [selectedName, setSelectedName] = useState<string>("/");
-  const [draggingRow, setDraggingRow] = useState<MRT_Row<TypeTable> | null>(
-    null
-  );
-  const [hoveredTable, setHoveredTable] = useState<string | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<MRT_Row<TypeFolderList> | null>(
-    null
-  );
+  const {
+    selectedName,
+    draggingRow,
+    hoveredTable,
+    hoveredRow,
+    setDraggingRow,
+    setHoveredRow,
+    setHoveredTable,
+  } = useFolderList();
 
   return (
     <Wrapper selected={selectedName === "/"}>
@@ -24,26 +20,12 @@ function App() {
         <div className="folder-list-box">
           <div className="folder-mock-box">
             <p>File Manager</p>
-            <FolderRoot
-              selectedName={selectedName}
-              setSelectedName={setSelectedName}
-              hoveredRow={hoveredRow}
-              setHoveredRow={setHoveredRow}
-              hoveredTable={hoveredTable}
-              setHoveredTable={setHoveredTable}
-            />
+            <FolderListTable root />
           </div>
           <div className="divider" />
           <div className="folder-list-item">
             <p>폴더</p>
-            <FolderList
-              selectedName={selectedName}
-              setSelectedName={setSelectedName}
-              hoveredRow={hoveredRow}
-              setHoveredRow={setHoveredRow}
-              hoveredTable={hoveredTable}
-              setHoveredTable={setHoveredTable}
-            />
+            <FolderListTable />
           </div>
         </div>
         <div className="table-box">
