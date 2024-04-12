@@ -97,16 +97,14 @@ const FolderList = ({
         accessorKey: "name",
         header: "Name",
         Cell: ({ row }) => {
-          const paddingLeft = `${row.depth * 15.5}px`;
+          const paddingLeft = `${row.depth * 10.5}px`;
           const isDisabled = !row.original.subRows?.length;
-          const iconColor = isDisabled ? "#ccc" : "default";
 
           return (
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.5rem",
                 paddingLeft,
               }}
             >
@@ -120,14 +118,19 @@ const FolderList = ({
                 aria-label="expand row"
                 disabled={isDisabled}
                 sx={{
-                  color: iconColor,
                   margin: " 0 0.55rem",
                 }}
               >
-                {row.getIsExpanded() || isDisabled ? (
-                  <KeyboardArrowDown />
-                ) : (
+                {isDisabled ? (
                   <KeyboardArrowRight />
+                ) : (
+                  <>
+                    {row.getIsExpanded() ? (
+                      <KeyboardArrowDown />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
+                  </>
                 )}
               </IconButton>
               {row.getValue("name")}
@@ -204,17 +207,17 @@ const FolderList = ({
         setSelectedName(row.id);
       },
       sx: {
-        height: "2.15rem",
+        height: "2.45rem",
         backgroundColor:
           hoveredRow?.original.name === row.original.name
             ? "#604bcc"
             : selectedName === row.id
             ? "#e2dcff"
             : "#fff",
-        cursor: "pointer",
         "td:nth-of-type(1)": {
           display: "none",
         },
+        cursor: "pointer",
         div: {
           color:
             hoveredRow?.original.name === row.original.name
@@ -231,6 +234,10 @@ const FolderList = ({
               : selectedName === row.id
               ? "#604bcc"
               : undefined,
+
+          ":disabled": {
+            color: selectedName === row.id ? "#604bcc" : "#757575",
+          },
         },
       },
     }),

@@ -6,7 +6,7 @@ import {
   MRT_TableContainer,
 } from "material-react-table";
 import { data as initData, type TypeTable } from "./makeData";
-import { TypeFolderList } from "../folderList";
+import { TypeFolderList } from "../folderList/folder";
 type OnChangeFn<T> = (updaterOrValue: T | ((prev: T) => T)) => void;
 
 interface TableProps {
@@ -68,6 +68,11 @@ const Table = ({
           setData([...data]);
         }
         if (hoveredTable === "folder-list-table") {
+          console.log(draggingRow?.original.firstName);
+          console.log(propsHoveredRow?.original.path);
+        }
+        if (hoveredTable === "root-table") {
+          console.log(draggingRow?.original.firstName);
           console.log(propsHoveredRow?.original.path);
         }
         setHoveredTable(null);

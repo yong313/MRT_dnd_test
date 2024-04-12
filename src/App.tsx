@@ -1,6 +1,9 @@
 import { useState } from "react";
-import FolderList, { type TypeFolderList } from "./components/folderList";
+import FolderList, {
+  type TypeFolderList,
+} from "./components/folderList/folder";
 import Table from "./components/table";
+import FolderRoot from "./components/folderList/root";
 import { type TypeTable } from "./components/table/makeData";
 import styled from "@emotion/styled";
 import { MRT_Row } from "material-react-table";
@@ -21,18 +24,27 @@ function App() {
         <div className="folder-list-box">
           <div className="folder-mock-box">
             <p>File Manager</p>
-            <p className="name-root" onClick={() => setSelectedName("/")}>
-              모든파일
-            </p>
+            <FolderRoot
+              selectedName={selectedName}
+              setSelectedName={setSelectedName}
+              hoveredRow={hoveredRow}
+              setHoveredRow={setHoveredRow}
+              hoveredTable={hoveredTable}
+              setHoveredTable={setHoveredTable}
+            />
           </div>
-          <FolderList
-            selectedName={selectedName}
-            setSelectedName={setSelectedName}
-            hoveredRow={hoveredRow}
-            setHoveredRow={setHoveredRow}
-            hoveredTable={hoveredTable}
-            setHoveredTable={setHoveredTable}
-          />
+          <div className="divider" />
+          <div className="folder-list-item">
+            <p>폴더</p>
+            <FolderList
+              selectedName={selectedName}
+              setSelectedName={setSelectedName}
+              hoveredRow={hoveredRow}
+              setHoveredRow={setHoveredRow}
+              hoveredTable={hoveredTable}
+              setHoveredTable={setHoveredTable}
+            />
+          </div>
         </div>
         <div className="table-box">
           <div className="table-mock-box" />
@@ -75,16 +87,32 @@ const Wrapper = styled.div<{ selected: boolean }>`
     box-sizing: border-box;
     padding: 2rem;
     flex-direction: column;
-    gap: 1.85rem;
+    gap: 1rem;
     border-right: 2px solid #efefef;
 
-    div {
-      flex-grow: 1;
+    .divider {
+      width: 100%;
+      height: 1px;
+      background-color: #efefef;
+    }
+
+    .folder-list-item {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      p {
+        color: #454545;
+        font-weight: 700;
+        margin: 0;
+        margin-left: 1rem;
+      }
     }
 
     .folder-mock-box {
       width: 100%;
-      max-height: 12.5%;
+      height: auto;
       background-color: #fff;
       flex-grow: auto;
       display: flex;
