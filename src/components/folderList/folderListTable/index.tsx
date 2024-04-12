@@ -257,6 +257,10 @@ const FolderListTable = ({
         border: "unset",
         padding: 0,
         borderRadius: "0.3rem",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+        userSelect: "none",
 
         "& button": {
           padding: 0,
